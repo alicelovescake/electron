@@ -2559,6 +2559,13 @@ int WebContents::GetActiveIndex() const {
   return web_contents()->GetController().GetCurrentEntryIndex();
 }
 
+GURL WebContents::GetURLForIndex(int index) const {
+  if (index >= GetHistoryLength() || index < 0) {
+    return GURL();
+  }
+  return web_contents()->GetController().GetEntryAtIndex(index)->GetURL();
+}
+
 void WebContents::ClearHistory() {
   // In some rare cases (normally while there is no real history) we are in a
   // state where we can't prune navigation entries
@@ -4353,6 +4360,7 @@ void WebContents::FillObjectTemplate(v8::Isolate* isolate,
       .SetMethod("canGoToIndex", &WebContents::CanGoToIndex)
       .SetMethod("goToIndex", &WebContents::GoToIndex)
       .SetMethod("getActiveIndex", &WebContents::GetActiveIndex)
+      .SetMethod("getURLForIndex", &WebContents::GetURLForIndex)
       .SetMethod("clearHistory", &WebContents::ClearHistory)
       .SetMethod("length", &WebContents::GetHistoryLength)
       .SetMethod("isCrashed", &WebContents::IsCrashed)

@@ -1955,6 +1955,27 @@ describe('<webview> tag', function () {
       }, [fixtures]);
     });
 
+    describe('<webview>.getURLForIndex()', () => {
+      it('should return correct url for 0th index in navigation history after visiting single page', async () => {
+        await loadWebView(w, {
+          nodeintegration: 'on',
+          webpreferences: 'contextIsolation=no',
+          src: blankPageUrl
+        });
+        await w.executeJavaScript('webview.executeJavaScript(`history.pushState(null, "", "foo.html")`, true)');
+        expect(await w.executeJavaScript('webview.getURLForIndex(0)')).to.equal('foo.html');
+      });
+      it('should return empty url for invalid index in navigation history', async () => {
+        await loadWebView(w, {
+          nodeintegration: 'on',
+          webpreferences: 'contextIsolation=no',
+          src: blankPageUrl
+        });
+        await w.executeJavaScript('webview.executeJavaScript(`history.pushState(null, "", "foo.html")`, true)');
+        expect(await w.executeJavaScript('webview.getURLForIndex(-1)')).to.equal('');
+      });
+    });
+
     describe('<webview>.clearHistory()', () => {
       it('should clear the navigation history', async () => {
         await loadWebView(w, {
